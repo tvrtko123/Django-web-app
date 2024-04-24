@@ -1,0 +1,22 @@
+<div class="list-group list-group-horizontal btn-group" id="likesarea" role="group">
+    
+
+      
+        {% if user.is_authenticated %}
+            <button hx-post="{% url 'like_post' post.id %}" id="like-button" 
+            hx-target="#likesarea" hx-swap="outerHTML" class="w-4 mr-1">
+        {% if request.user in post.likes.all %}
+            <span class="text-sky-900 dark:text-blue-300"><i class="fa-solid fa-heart hover:scale-125"></i></span>
+        {% else %}
+            <span class="text-sky-900 dark:text-blue-300"><i class="fa-regular fa-heart hover:scale-125"></i></span>
+        {% endif %}
+        </button>
+
+        {% else %}
+        <button type="button" data-modal-toggle="top-right-modal">
+            <span class="text-sky-900 dark:text-slate-400"><i class="fa-regular fa-heart hover:scale-125"></i></span>
+        </button>
+        {% endif %}
+
+        <span class="text-sky-900 dark:text-blue-400">{{ post.likes.count }}</span>    
+</div>

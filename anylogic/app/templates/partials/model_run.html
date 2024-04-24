@@ -1,0 +1,43 @@
+{% load static %}
+{% block content %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+  <script src="https://kit.fontawesome.com/78183b1dc9.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+  <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          screens: {
+            'custombp': {'raw': '(max-width: 767.5px)'}
+          }
+        }
+      }
+    }
+  </script>
+  <title>{{ post.naslov }}</title>
+  <script>
+    document.body.addEventListener("confetti", function(evt){
+      var newWidth = window.innerWidth;
+      if (newWidth >= 1024) {
+        mainele.style="margin-left: 24rem;";
+      }
+      else {
+        mainele.style="margin-left: 0;";
+      }
+    });
+  </script>
+</head>
+<body id="body" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-slate-100 dark:bg-slate-700">
+<div class="w-full h-full">
+    <iframe min-width='100%' right='0' bottom='0' position='fixed' class="absolute w-full h-full object-cover top-0 left-0" allow="fullscreen" src="{{ post.embed }}"></iframe>
+</div>
+<script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+<script src="https://unpkg.com/htmx.org@1.6.1/dist/htmx.min.js"></script>
+<script src="{% static 'main.js' %}"></script>
+</body>
+{% endblock %}

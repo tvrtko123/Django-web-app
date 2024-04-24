@@ -1,0 +1,12 @@
+<a id="profile" hx-get="{% url 'update_profile_picture' user.id %}" hx-target="body" hx-swap="beforeend">
+    <div class="group relative text-center">
+      <div class="image overflow-hidden">
+          <img id="profile_picture" class="h-auto w-full mx-auto group-hover:blur-[2px]"
+              src="{{ profil.image.url }}"
+              alt="">
+          <div class="absolute left-[47.5%] top-[47.5%] opacity-0 h-0 group-hover:opacity-100 group-hover:h-fit">
+            <i class="fa-solid fa-image"></i>
+          </div>
+      </div>                      
+    </div>
+  </a>

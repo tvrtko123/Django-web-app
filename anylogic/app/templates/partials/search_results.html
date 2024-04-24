@@ -1,0 +1,39 @@
+<div id="replacingPosts" class="">
+<div id="postsDiv" class="mt-8 grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 xs:grid-cols-2 gap-5">
+  {% if posts %}
+  <!-- cards go here -->
+  {% for post in page_obj %}
+  <a hx-get="{% url 'post_settings' post.pk %}" hx-push-url="true" hx-target="#body" hx-swap="outerHTML" hx-trigger="click" id="card_post" class="cursor-pointer">
+    <div class="card hover:shadow-lg bg-white dark:bg-slate-800 rounded-sm"> 
+      <iframe min-width='100%' right='0' bottom='0' position='fixed' class="h-64 sm:h-48 w-full object-cover rounded-t-sm pointer-events-none" allow="fullscreen" src="{{ post.embed }}"></iframe>
+      <div class="p-1">
+        <div class="m-4">
+          <span class="font-bold overflow-x-hidden truncate dark:text-slate-300">{{ post.naslov }}</span>
+          <div class="flex justify-between mt-1">
+          <span class="block text-gray-500 text-sm justify-between overflow-x-hidden truncate text-slate-900 dark:text-slate-400">{{ post.profil }}</span><span class="text-sky-900 dark:text-slate-400 py-1 px-3"><i class="fa-solid fa-heart"></i><span class="ml-2">{{ post.total_likes }}</span></span>
+        </div>
+        </div>
+        <div class="badge ml-1">
+          <svg class="inline-block w-5 mb-1 fill-white dark:fill-slate-300" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span class="dark:text-slate-300">{{post.datum | timesince}} ago</span>
+        </div>
+      </div>
+  </div>
+</a>
+  {% endfor %}
+</div>
+{% if page_obj.has_next %}
+        <div id="replaceMe" class="mt-12 flex justify-center">
+          <div class="btn bg-secondary-100 text-secondary-200 inline-block cursor-pointer transform hover:scale-125 hover:bg-opacity-50 transition ease-out duration-300"
+          {% if kategorijas_filter %}
+          hx-get="{% url 'kategorija_filter' kategorijas_filter.naziv %}?page={{ page_obj.next_page_number }}"
+          {% else %}
+          hx-get="{% url 'posts' %}?page={{ page_obj.next_page_number }}"
+          {% endif %}
+          hx-select="#replacingPosts" hx-target="#replaceMe" hx-swap="outerHTML" hx-trigger="click">Load more</div>
+        </div>
+        {% endif %}
+</div>
+{% else %}
+    <p class="text-slate-800 dark:text-slate-300">No search results</p>
+{% endif %}

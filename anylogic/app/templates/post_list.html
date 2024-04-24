@@ -1,0 +1,245 @@
+{% load static %}
+{% block content %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+  <script src="https://kit.fontawesome.com/78183b1dc9.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+  <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          screens: {
+            'custombp': {'raw': '(max-width: 767.5px)'}
+          }
+        }
+      }
+    }
+  </script>
+  <title>Models</title>
+</head>
+
+<body id="body" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-slate-100 dark:bg-slate-700">
+  <nav id="navele" class="w-full fixed top-0 bg-sky-800 border-gray-200 z-30 px-3 py-2 h-14 flex dark:bg-slate-800 overflow-visible inset-x-0 items-center" hx-trigger="loginSuccessful from:body" hx-get="{{ request.path }}" hx-target="#body" hx-swap="outerHTML">
+    <div class="container flex flex-wrap justify-between absolute min-w-full right-0">
+      <div class="flex items-center">
+      <button id="sideBtn" onclick="myFunction()" class="lg:hidden ml-2 p-2">
+        <svg class="w-6 h-6 fill-white dark:fill-gray-200 pointer-events-none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+      </button>
+      <a hx-get="{% url 'posts' %}" hx-push-url="true" hx-target="#body" hx-swap="outerHTML" hx-trigger="click" class="flex items-center cursor-pointer">
+      <!-- <img src="/docs/images/logo.svg" class="mr-3 h-6 sm:h-9" alt="Flowbite Logo"> -->
+      <span class="self-center text-xl text-white font-semibold whitespace-nowrap dark:text-gray-200 justify-between items-center w-full md:flex md:w-auto md:order-1 mb-0.5 ml-2 lg:ml-4" id="mobile-menu-2">Aplikacija</span>
+      </a>
+      </div>
+      <div id="mobile-menu-3" class="hidden flex w-1/2 md:block custombp:dark:bg-slate-700 custombp:top-12 custombp:min-w-full custombp:pt-2 custombp:px-4 custombp:bg-slate-100 custombp:inset-x-0 custombp:absolute md:order-2">
+        {% if profil_filter %}
+        <div class="flex absolute inset-y-0 md:pl-[5.55rem] custombp:left-[5.8rem] custombp:mt-2 items-center inline-block align-bottom custombp:ml-6 md:ml-3 pointer-events-none order-2">
+          <svg class="w-5 h-5 fill-slate-600 dark:fill-slate-200" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+          </div>
+        <div class="flex items-center">
+          <span class="px-2 py-1.5 mr-2 bg-sky-600 dark:bg-sky-800 text-slate-100 rounded">{{ profil_filter.username }}</span>
+        <input type="text" id="searchInput"
+        hx-post="{% url 'search_model_profile' profil_filter.id %}"
+        hx-target="#replacingPosts" hx-trigger="keyup changed delay:500ms" hx-swap="outerHTML" name="search" class="block focus:border-none p-2 pl-10 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 text-sm dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-200 order-2" placeholder="Search...">
+      </div>
+        {% else %}
+        <div class="flex absolute inset-y-0 custombp:left-1 custombp:mt-2 items-center inline-block align-bottom custombp:ml-6 md:ml-3 pointer-events-none order-2">
+          <svg class="w-5 h-5 fill-slate-600 dark:fill-slate-200" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+          </div>
+        <input type="text" id="searchInput"
+         {% if kategorijas_filter %}
+         hx-post="{% url 'search_model_category' kategorijas_filter.naziv %}"
+         {% else %}
+         hx-post="{% url 'search_model' %}"
+         {% endif %}
+         hx-target="#replacingPosts" hx-trigger="keyup changed delay:500ms" hx-swap="outerHTML" name="search" class="block focus:border-none p-2 pl-10 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 text-sm dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-200 order-2" placeholder="Search...">
+        {% endif %}
+      </div>
+      <div class="flex md:order-2 justify-between">
+      <button type="button" id="searchButton" onclick="myFunctionSeach()" class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-sky-900 dark:hover:bg-sky-900 focus:outline-none dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1">
+      <svg class="w-5 h-5 fill-white dark:fill-gray-300" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+      </button>
+      <button type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full h-fit my-auto" id="user-menu-button" aria-expanded="false" type="button" onclick="myFunctionDropdown()">
+        <span class="sr-only">Open user menu</span>
+        {% if request.user.is_authenticated and request.user.profil.image %}
+        <img class="w-8 h-8 rounded-full object-cover pointer-events-none m-auto" src="{{ request.user.profil.image.url }}" alt="user photo">
+        {% else %}
+        <i class="fa-solid fa-user bg-gray-50 dark:bg-slate-400 w-8 h-8 rounded-full object-cover pointer-events-none m-auto pt-2.5"></i>
+        {% endif %}
+      </button>
+      <!-- Dropdown menu -->
+      <div class="hidden absolute z-50 text-base list-none bg-white rounded divide-y divide-gray-300 shadow dark:bg-gray-700 dark:divide-gray-600 right-0 top-12 mt-1" id="dropdown">
+        <div class="py-3 text-sm text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">
+          <span class="">
+            {% if request.user.is_authenticated %}
+              <a class="py-3 px-4 cursor-pointer" hx-get="{% url 'profile' request.user.id %}" hx-target="body" hx-swap="outerhtml scroll:#body:top" hx-push-url="true">{{ request.user.username }}</a>
+            {% else %}
+            <div class="px-4">Guest</div>
+            {% endif %}
+          </span>
+        </div>
+        <ul aria-labelledby="dropdown">
+          <li>
+            <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Help</a>
+          </li>
+          <li>
+            <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">About</a>
+          </li>
+          <li>
+            <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
+          </li>
+          <li class="cursor-pointer">
+              {% if user.is_authenticated %}
+              <a hx-get="{% url 'logout' %}?next={% url 'posts' %}" hx-target="body" hx-swap="outerhtml" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
+            {% else %}
+            <a hx-get="{% url 'login_user' %}" hx-target="body" hx-swap="beforeend" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Log in</a>
+            {% endif %}
+            </a>
+          </li>
+        </ul>
+      </div>
+      </div>
+      </div>
+  </nav>
+  <div class="lg:flex top-12">
+    <div id="myDIV" class="col-span-1 w-96 min-w-fit content-center overflow-y-scroll top-14 bottom-0 fixed bg-[#ffffff] z-30 block lg:block dark:bg-gray-700" dataavailable="false">
+      <ul class="z-50">       
+          <a hx-get="{% url 'posts' %}" hx-push-url="true" hx-target="#body" hx-swap="outerHTML scroll:#body:top swap:500ms" hx-trigger="click" class="content-center cursor-pointer"><li class="content-center hover:bg-gray-100 dark:hover:bg-slate-600 w-auto h-10 border-b border-r border-gray-300 dark:border-gray-500 text-lg justify-between"><span class="inline-block align-middle mt-1.5 ml-3 text-gray-500 dark:text-slate-300">All models</span><span class="inline-block justify-end align-middle mt-1.5 ml-3 float-right pt-0.5 mr-3 text-sm text-slate-500 dark:text-slate-700 text-center w-11 h-6 rounded bg-gray-200 dark:bg-slate-300">{{ posts_all.count }}</span></li></a>
+          {% for kategorija in count %}
+          <a hx-get="{% url 'kategorija_filter' kategorija.naziv %}" hx-push-url="true" hx-target="#body" hx-swap="outerHTML scroll:#body:top swap:500ms" hx-trigger="click" class="content-center"><li class="content-center cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-600 w-auto h-10 border-b border-r border-gray-300 dark:border-gray-500 text-lg justify-between"><span class="inline-block align-middle mt-1.5 ml-3 text-gray-500 dark:text-slate-300">{{ kategorija.naziv }}</span><span class="inline-block justify-end align-middle mt-1.5 ml-3 float-right mr-3 text-base text-gray-500 dark:text-gray-700 text-center w-11 h-6 rounded bg-gray-200 dark:bg-slate-300">{{ kategorija.num_posts }}</span></li></a>
+          {% endfor %}
+      </ul>
+  </div>
+</div>
+  <div id="maindiv" class="grid grid-cols-5 h-screen flex z-0">
+
+
+
+    <main id="mainele" class="col-start-1 col-end-6 px-16 py-6 ml-0 lg:ml-96 bg-slate-100 dark:bg-slate-700 top-12" hx-trigger="load" hx-get="/margin_left" hx-swap="afterend">
+      <!--Overlay Effect-->
+  <div class="fixed hidden inset-0 bg-slate-900 bg-opacity-75 overflow-y-auto h-full w-full"
+  id="my-modal">
+  </div>
+
+      <div class="flex justify-end mt-14">
+        {% if user.is_superuser %}
+        <button hx-get="{% url 'add_post' %}" hx-target="#body" hx-trigger="click" hx-swap="beforeend" class="text-black dark:text-slate-300">
+          Add a model
+        </button>
+        {% endif %}
+      </div>
+
+      <h4 class="font-bold pb-2 mt-4 border-b border-gray-700 dark:border-gray-300 dark:text-slate-300"></h4>
+      <div id="replacingPosts" class="">  
+        <div id="postsDiv" class="mt-8 grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 xs:grid-cols-2 gap-5" hx-trigger="addPostSuccessful from:body" hx-get="{{ request.path }}" hx-target="body" hx-swap="outerHTML">
+          <!-- cards go here -->
+          {% for post in page_obj %}
+          <a hx-get="{% url 'post_settings' post.pk %}" hx-push-url="true" hx-target="#body" hx-swap="outerHTML scroll:#body:top" hx-trigger="click" id="card_post" class="cursor-pointer">
+            <div class="card hover:shadow-lg bg-white dark:bg-slate-800 rounded-sm"> 
+              <iframe min-width='100%' right='0' bottom='0' position='fixed' class="h-64 sm:h-48 w-full object-cover rounded-t-sm pointer-events-none" allow="fullscreen" src="{{ post.embed }}"></iframe>
+              <div class="p-1">
+                <div class="m-4">
+                  <span class="font-bold overflow-x-hidden truncate dark:text-slate-300">{{ post.naslov }}</span>
+                  <div class="flex justify-between mt-1">
+                  <span class="block text-gray-500 text-sm justify-between overflow-x-hidden truncate text-slate-900 dark:text-slate-400">{{ post.profil }}</span><span class="text-sky-900 dark:text-slate-400 py-1 px-3"><i class="fa-solid fa-heart"></i><span class="ml-2">{{ post.total_likes }}</span></span>
+                </div>
+                </div>
+                <div class="badge ml-1">
+                  <svg class="inline-block w-5 mb-1 fill-white dark:fill-slate-300" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span class="dark:text-slate-300">{{post.datum | timesince}} ago</span>
+                </div>
+              </div>
+          </div>
+        </a>
+          {% endfor %}
+        </div>
+        {% if page_obj.has_next %}
+        <div id="replaceMe" class="mt-12 flex justify-center">
+          <div class="btn bg-secondary-100 dark:text-slate-300 text-secondary-200 inline-block cursor-pointer transform hover:scale-125 hover:bg-opacity-50 transition ease-out duration-300"
+          {% if kategorijas_filter %}
+          hx-get="{% url 'kategorija_filter' kategorijas_filter.naziv %}?page={{ page_obj.next_page_number }}"
+          {% else %}
+          hx-get="{% url 'posts' %}?page={{ page_obj.next_page_number }}"
+          {% endif %}
+          hx-select="#replacingPosts" hx-target="#replaceMe" hx-swap="outerHTML" hx-trigger="click">Load more</div>
+        </div>
+        {% endif %}
+      </div>   
+    </main>
+  </div>
+
+  <!-- Scripts: Bootstraps, HTMX, and custom JavaScript -->
+  <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+  <script src="https://unpkg.com/htmx.org@1.6.1/dist/htmx.min.js"></script>
+  <script src="{% static 'main.js' %}"></script>
+  <script>
+    document.body.addEventListener('configRequest.htmx', (event) => {
+      event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+    window.onclick = function(event) {
+    var newWidth = window.innerWidth;
+      if (event.target != close_l && event.target != l && l.style.display === "block") {
+        l.style.display = "none";
+        console.log("mnaruga")
+      }
+
+      if (newWidth < 1024 && event.target != close_x && event.target != x && x.style.display === "block") {
+        x.style="display: block; animation: remove 0.5s ease-in-out; animation-iteration-count: 1;"
+        console.log("onclick")
+      let timer
+      clearTimeout(timer);
+        timer = setTimeout(() =>{
+          x.dataavailable = "false";
+          x.style.display = "none";
+          overlay.style.display = "none";
+          maindiv.style = 'pointer-events: auto;';
+        }, 400);
+        console.log("druga")
+      }
+    }
+  
+  window.addEventListener('resize', function(event){
+    var newWidth = window.innerWidth;
+    if (newWidth >= 1024 && mainele.style.marginLeft != "24rem") {
+      x.style="display: block; animation: move 0.5s ease-in-out; animation-iteration-count: 1;";
+      mainele.style="margin-left: 24rem; width: auto; animation: move 0.5s ease-in-out; animation-iteration-count: 1;";
+      let timer
+      clearTimeout(timer);
+        timer = setTimeout(() =>{
+          mainele.dataavailable="true"
+          mainele.style="margin-left: 24rem; width: auto;";
+        }, 490);
+      x.dataavailable = "false";
+      mainele.dataavailable = "false";
+      overlay.style.display = "none";
+      //y.style.pointerEvents = 'auto';
+      console.log("prvo")
+    }
+    else if (newWidth < 1024 && mainele.style.marginLeft === "24rem"){
+      let timer
+      mainele.style="margin-left: 24rem; width: 100%; animation: remove 0.5s ease-in-out; animation-iteration-count: 1;";
+      x.style="display: block; animation: remove 0.5s ease-in-out; animation-iteration-count: 1;";
+      clearTimeout(timer);
+        timer = setTimeout(() =>{
+          mainele.style="margin-left: 0;";
+          x.style.display = "none";
+        }, 490);
+        console.log("drugoi")
+    }
+    else if (newWidth < 1024 && x.style.display === "block" && x.dataavailable === "true"){
+      x.style.display = "block";
+      console.log("trece")
+    }
+    // else {
+    //   x.style.display = "none";
+    //   x.dataavailable = "true";
+    //   overlay.style.display = "none";
+    // }
+  });
+</script>
+</body>
+  
+{% endblock %}

@@ -1,0 +1,42 @@
+<script>
+    var modalFull = document.getElementById("defaultModal");
+    var modalOverlay = document.getElementById("modalOverlay");
+    var body = document.getElementById("body");
+    var closeCopyModalBtn = document.getElementById("closeCopyModalBtn");
+
+        body.onclick = function(eventLogin) {
+            if (eventLogin.target == modalFull || eventLogin.target == closeCopyModalBtn) {
+                modalFull.remove();
+                modalOverlay.remove();
+                body.style = 'pointer-events: auto;';
+            }
+            
+        }
+
+</script>
+
+    <div id="defaultModal" tabindex="-1" aria-hidden="true" class="overflow-y-auto z-50 fixed top-0 right-0 left-0 w-full md:inset-0 h-modal md:h-full justify-center items-center flex">
+        <div class="relative p-4 w-full max-w-3xl h-auto">
+            <!-- Modal content -->
+            <div class="relative bg-slate-100 rounded-lg shadow dark:bg-slate-600">
+                <!-- Modal header -->
+                <div class="flex justify-between items-start rounded-t">
+                    <h3 class="text-xl ml-6 mt-6 font-semibold text-slate-900 dark:text-slate-200">
+                      Embed model {{ post.naslov }}
+                    </h3>
+                    <button id="closeCopyModalBtn" type="button" class="absolute top-3 right-3 text-gray-400 bg-transparent hover:text-gray-900 rounded-lg text-smml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
+                        <svg aria-hidden="true" class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        <span class="sr-only">Close modal</span>
+                </div>
+                <!-- Modal body -->
+                <div class="p-6 space-y-6">
+                    <textarea id="w3review" class="text-base px-1 rounded-sm border-slate-300 dark:border-slate-400 bg-sky-50 dark:bg-slate-500 leading-relaxed text-slate-900 dark:text-slate-100 resize-none w-full focus:border-slate-400 focus:dark:border-slate-300" readonly="true" name="w3review" rows="4" cols="50">&lt;iframe&gt; width="1000" height="650" allow="fullscreen" src="{% url 'model_run' post.pk %}">&lt;/iframe&gt;</textarea>
+                </div>
+                <!-- Modal footer -->
+                <div class="flex items-center pr-6 pb-6 space-x-2 place-content-end">  
+                    <button onclick="copyText()" id="btnCpy" type="button" class="text-slate-100 font-medium bg-blue-600 rounded-lg text-sm px-5 py-2.5 text-center w-24">Copy</button>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div id="modalOverlay" modal-backdrop="" class="bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40"></div>
